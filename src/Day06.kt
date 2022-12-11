@@ -1,17 +1,17 @@
 
 fun main() {
     fun part1(input: String): Int {
-        val a = mutableListOf<Char>()
+        val chars = mutableListOf<Char>()
         var index = 0
         for(char in input) {
             index++
-            a.add(char)
+            chars.add(char)
 
-            if (a.size > 4) {
-                a.removeAt(0)
+            if (chars.size > 4) {
+                chars.removeAt(0)
             }
 
-            if (a.size == 4 && a.size == a.distinct().size) {
+            if (chars.size == 4 && chars.size == chars.distinct().size) {
                 // found it!
                 break
             }
