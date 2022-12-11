@@ -55,13 +55,32 @@ fun main() {
         }.joinToString(separator = "")
     }
 
-    fun part2(input: List<String>): Int {
-        return 1
+    fun part2(input: List<String>): String {
+        val crateStacks = buildCrateStacks(input)
+
+        val movementLines = input.takeLastWhile {it ->
+            it.isNotEmpty()
+        }
+
+        movementLines.forEach { movementLine ->
+            val a = movementLine.split(" ")
+            val size = a[1].toInt()
+            val from = a[3].toInt()
+            val to = a[5].toInt()
+
+            val crate = crateStacks[from]?.takeLast(size) ?: listOf()
+            crateStacks[to]?.addAll(crate)
+            repeat(size) { crateStacks[from]?.removeLastOrNull() }
+        }
+
+        return crateStacks.map { (key, value) ->
+            value.last()
+        }.joinToString(separator = "")
     }
 
     val testInput = readInput("Day05_test")
     check(part1(testInput) == "CMZ")
-    check(part2(testInput) == 1)
+    check(part2(testInput) == "MCD")
 
     val input = readInput("Day05")
     println(part1(input))
