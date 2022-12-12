@@ -61,29 +61,31 @@ fun main() {
     fun part2(input: List<String>): Int {
         val foldersWithSizes = processCommands(input = input, foldersWithSizes = mapOf(), path = Paths.get("/"))
 
-        val foldersWithTotalSizes = foldersWithSizes.map { (path, _) ->
-            path to foldersWithSizes.filter { it != path && it.key.startsWith(path) }.map { it.value }.sum()
-        }.toMap()
+        val totalDiskSpace = 70000000
+        val updateSpaceNeeded = 30000000
+        val unusedSpace = totalDiskSpace - foldersWithSizes.map { (path, size) -> size }.sum()
+        val minSpaceNeeded = updateSpaceNeeded - unusedSpace
 
-        foldersWithSizes.map { (path, _) ->
-            path to foldersWithSizes.filter { it != path && it.key.startsWith(path) }.map { it.value }.sum()
-        }
-            .toMap()
-            .filter { (path, size) ->
-                size >= 30000000
+        val folderSizes = foldersWithSizes
+            .map { (path, _) ->
+                // total folder size
+                foldersWithSizes.filter { it != path && it.key.startsWith(path) }.map { it.value }.sum()
             }
 
-
-        println(foldersWithTotalSizes)
-
-        return 2
+        return folderSizes.fold(totalDiskSpace) { currentSize: Int, size: Int ->
+            if (size in minSpaceNeeded..currentSize) {
+                size
+            } else {
+                currentSize
+            }
+        }
     }
 
     val testInput = readInput("Day07_test")
     check(part1(testInput) == 95437)
-//    check(part2(testInput) == 1)
+    check(part2(testInput) == 24933642)
 
     val input = readInput("Day07")
     println(part1(input))
-//    println(part2(input))
+    println(part2(input))
 }
