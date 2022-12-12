@@ -47,25 +47,43 @@ fun main() {
     fun part1(input: List<String>): Int {
         val foldersWithSizes = processCommands(input = input, foldersWithSizes = mapOf(), path = Paths.get("/"))
 
-        return foldersWithSizes.mapNotNull { (path, _) ->
-            val totalFolderSize = foldersWithSizes.filter { it != path && it.key.startsWith(path) }.map { it.value }.sum()
-            if (totalFolderSize <= 100000) {
-                totalFolderSize
-            } else {
-                null
+        return foldersWithSizes
+            .map { (path, _) ->
+                // total folder size
+                foldersWithSizes.filter { it != path && it.key.startsWith(path) }.map { it.value }.sum()
             }
-        }.sum()
+            .filter { totalFolderSize ->
+                totalFolderSize <= 100000
+            }
+            .sum()
     }
 
     fun part2(input: List<String>): Int {
-        return 1
+        val foldersWithSizes = processCommands(input = input, foldersWithSizes = mapOf(), path = Paths.get("/"))
+
+        val foldersWithTotalSizes = foldersWithSizes.map { (path, _) ->
+            path to foldersWithSizes.filter { it != path && it.key.startsWith(path) }.map { it.value }.sum()
+        }.toMap()
+
+        foldersWithSizes.map { (path, _) ->
+            path to foldersWithSizes.filter { it != path && it.key.startsWith(path) }.map { it.value }.sum()
+        }
+            .toMap()
+            .filter { (path, size) ->
+                size >= 30000000
+            }
+
+
+        println(foldersWithTotalSizes)
+
+        return 2
     }
 
     val testInput = readInput("Day07_test")
     check(part1(testInput) == 95437)
-    check(part2(testInput) == 1)
+//    check(part2(testInput) == 1)
 
     val input = readInput("Day07")
     println(part1(input))
-    println(part2(input))
+//    println(part2(input))
 }
